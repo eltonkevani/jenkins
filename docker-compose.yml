@@ -1,41 +1,33 @@
-version: '2'
-
+version: "2"
+#volumes:
+#  jenkins-master:
+#    driver: "local"
+#  jenkins-slave:
+#    driver: "local"
 services:
-  # Jenkins Master
   jenkins:
-    image: blacklabelops/jenkins:alpine
-    container_name: jenkins
-    hostname: jenkins
-    networks:
-      - jenkinsnet
+    #image: "blacklabelops/jenkins:2.46.3"
+    build: .
+    environment:
+      - SWARM_JENKINS_USER=lolo
+      - SWARM_JENKINS_PASSWORD=lili
+      - JENKINS_PLUGINS="swarm"
     ports:
-     - "8090:8080"
+      - "49001:8080"
+    restart: "always"
     volumes:
-      - jenkinsdata:/jenkins
-      - jenkinslogs:/var/log
-    env_file:
-      - jenkins-master.env
-    labels:
-      com.blacklabelops.description: "Jenkins Continuous Integration System"
-      com.blacklabelops.service: "jenkins-master"
-  # Jenkins Slave
-  slave:
-    image: blacklabelops/swarm-jdk8
-    networks:
-      - jenkinsnet
-    env_file:
-      - jenkins-slave.env
-    labels:
-      com.blacklabelops.description: "Jenkins Swarm JDK-8 Slave"
-      com.blacklabelops.service: "slave"
-      com.blacklabelops.applications: "java maven gradle"
-
-volumes:
-  jenkinsdata:
-    external: false
-  jenkinslogs:
-    external: false
-
-networks:
-  jenkinsnet:
-    driver: bridge
+      - "./volumes/master:/jenkins"
+    container_name: jenkins1
+  jenkins-slave:
+    image: "blacklabelops/jenkins-swarm:2.2"
+    restart: "always"
+    depends_on:
+      - jenkins
+    links:
+    - jenkins
+    volumes:
+      - "./volumes/slave:/opt/jenkins"
+    environment:
+      - SWARM_JENKINS_USER=lolo
+      - SWARM_JENKINS_PASSWORD=lili
+      - SWARM_CLIENT_PARAMETERS=-name 'slave1'

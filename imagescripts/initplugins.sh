@@ -5,7 +5,7 @@
 
 jenkins_plugins=""
 
-DEFAULT_PLUGINS="docker-workflow ant build-timeout credentials-binding email-ext github-organization-folder gradle workflow-aggregator ssh-slaves subversion timestamper ws-cleanup"
+DEFAULT_PLUGINS="swarm docker-workflow ant build-timeout credentials-binding email-ext github-organization-folder gradle workflow-aggregator ssh-slaves subversion timestamper ws-cleanup"
 
 if [ ! -n "${JENKINS_PLUGINS}" ]; then
   JENKINS_PLUGINS=$JENKINS_PLUGINS" "$DEFAULT_PLUGINS

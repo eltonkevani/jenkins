@@ -104,5 +104,7 @@ VOLUME ["${JENKINS_HOME}"]
 EXPOSE 8080 50000
 COPY imagescripts/ ${BLACKLABELOPS_JENKINS_HOME}
 USER jenkins
+RUN /bin/bash -c 'mkdir -p /jenkins/jobs/petclinic-pipeline'
+COPY buildscripts/config.xml ${JENKINS_HOME}/jobs/petclinic-pipeline/
 ENTRYPOINT ["/sbin/tini","--","/opt/jenkins/docker-entrypoint.sh"]
 CMD ["jenkins"]
